@@ -25,12 +25,16 @@ document.addEventListener('DOMContentLoaded', ()=>{
     socket.on("talk_s1",(data)=>{
         var personinfo = document.getElementById("infodata1");
         personinfo.setAttribute("style","color:lime;");
+        messagesbox.insertAdjacentHTML("beforeend","<div class='message person1'>Person 1: <strong>Connected</strong></div><br>");
+        window.scrollBy(0,9999);
         personinfo.textContent = "Connected!";
     });
     
     socket.on("talk_s2",(data)=>{
         var personinfo = document.getElementById("infodata2");
         personinfo.setAttribute("style","color:lime;");
+        messagesbox.insertAdjacentHTML("beforeend","<div class='message person2'>Person 2: <strong>Connected</strong></div><br>");
+        window.scrollBy(0,9999);
         personinfo.textContent = "Connected!";
     });
 
@@ -53,8 +57,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
         window.scrollBy(0,9999);
         if(reconnecttoggle.checked){
             socket.emit("newsearch1");
-            messagesbox.insertAdjacentHTML("beforeend","<div class='message person1'>Person 1: <strong>New Search</strong></div><br>");
-            window.scrollBy(0,9999);
         }
     });
 
@@ -66,8 +68,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
         window.scrollBy(0,9999);
         if(reconnecttoggle.checked){
             socket.emit("newsearch2");
-            messagesbox.insertAdjacentHTML("beforeend","<div class='message person2'>Person 2: <strong>New Search</strong></div><br>");
-            window.scrollBy(0,9999);
         }
     });
 
@@ -85,14 +85,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
     var search2 = document.getElementById("search2");
     search1.onclick = ()=>{
         socket.emit("newsearch1");
-        messagesbox.insertAdjacentHTML("beforeend","<div class='message person1'>Person 1: <strong>New Search</strong></div><br>");
-        window.scrollBy(0,9999);
-        
     };
     search2.onclick = ()=>{
         socket.emit("newsearch2");
-        messagesbox.insertAdjacentHTML("beforeend","<div class='message person2'>Person 2: <strong>New Search</strong></div><br>");
-        window.scrollBy(0,9999);
     };
 
     var personinput1 = document.getElementById("personinput1");

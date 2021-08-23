@@ -6,6 +6,7 @@ constructor(){
     this.connected = false;
     this.ceid = 0;
     this.idn = 0;
+    this.discb = undefined;
 }
 
 
@@ -53,7 +54,10 @@ init(){
             }
             if(parseddata.ev_name == "sdis"){
                 this.ckey = undefined;
-                this.connected = false;
+                if(this.discb){
+                    this.discb();
+                    this.discb = undefined;
+                }
             }
             
             this.emit(parseddata.ev_name,parseddata.ev_data);
@@ -62,21 +66,30 @@ init(){
         }
     });
 }
-disconnect(){
-    console.log("disc")
+disconnect(cb){
+    //console.log("disc")
     if(this.ckey){
         var disdata = {"ev_name":"_distalk","ev_data":{"ckey":this.ckey},"ceid":this.ceid};
-        this.ws.send("4"+disdata);
-        this.ckey = undefined;
-        this.connected = false;
+        this.ws.send("4"+JSON.stringify(disdata));
+        if (cb){
+            this.discb = cb;
+        }
+    }
+}
+sendTypingIndicator(val){
+    if(this.ckey){
+        var msgdata = {"ev_name":"_mtyp","ev_data":{"ckey":this.ckey,"val":val}};
+        this.ws.send("4"+JSON.stringify(msgdata));
     }
 }
 sendMessage(txt){
     if(this.ckey){
+        this.sendTypingIndicator(true);
         var msgdata = {"ev_name":"_pmsg","ev_data":{"ckey":this.ckey,"msg":txt,"idn":this.idn},"ceid":this.ceid};
         this.ws.send("4"+JSON.stringify(msgdata));
         this.ceid = this.ceid + 1;
         this.idn = this.idn + 1;
+        this.sendTypingIndicator(false);
     }
 }
 searchPerson(){
