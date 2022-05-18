@@ -69,5 +69,5 @@ function translate(words,toman){
     });
     return final;
 }
-console.log(translate("Cześć jestem Marcin mam 18 lat dzisiaj byłem na uczelni i jadłem obiad",false));
+//console.log(translate("Cześć jestem Marcin mam 18 lat dzisiaj byłem na uczelni i jadłem obiad",false));
 module.exports = translate;
