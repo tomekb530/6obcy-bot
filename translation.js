@@ -1,4 +1,4 @@
-var imiona = require("./imiona.js");
+var imiona = require("./names.js");
 var translationman = {
     "łeś":"łaś",
     "łem":"łam",
