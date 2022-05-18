@@ -1,7 +1,6 @@
-const obcy = require("./6obcyConn.js");
-var Obcy = require("./6obcyConn.js");
-var io = require("./ui.js");
-var translate = require("./translation.js");
+var Obcy = require("./modules/6obcyConn.js");
+var io = require("./modules/ui.js");
+var translate = require("./modules/translation.js");
 var obcy1 = new Obcy();
 var obcy2 = new Obcy();
 var relaying = true;
