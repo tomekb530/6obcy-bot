@@ -17,7 +17,7 @@ body{
 .messages{
 margin-top:4%;
 width:100%;
-margin-bottom:5%;
+margin-bottom:10%;
 }
 .message{
     width:50%;
@@ -59,4 +59,20 @@ margin-bottom:5%;
 }
 .message:nth-child(1){
     margin-top:1%;
+}
+
+#captcha1{
+    background-color:rgb(41, 41, 41);
+    float:left;
+    position:absolute; 
+    width:50%;
+    border-radius:25px;
+}
+#captcha2{
+    background-color:rgb(41, 41, 41);
+    float:right;
+    margin-left:50%;
+    position:absolute; 
+    width:50%;
+    border-radius:25px;
 }

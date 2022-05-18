@@ -6,6 +6,7 @@ constructor(){
     this.connected = false;
     this.ceid = 0;
     this.idn = 0;
+    this.ckey = undefined;
     this.discb = undefined;
 }
 
@@ -22,7 +23,6 @@ init(){
     );
 
     this.ws.on("open",()=>{
-        this.connected = true;
         this.emit("connected");
     });
     this.pingtime = 0;
@@ -43,6 +43,7 @@ init(){
             }
             if(parseddata.ev_name == "talk_s"){
                 this.ckey = parseddata.ev_data.ckey;
+                console.log(this.ckey);
                 this.cid = parseddata.ev_data.cid;
                 var ackeddata = {"ev_name":"_begacked","ev_data":{"ckey":this.ckey},"ceid":this.ceid};
                 this.ceid = this.ceid + 1;
@@ -54,6 +55,7 @@ init(){
             }
             if(parseddata.ev_name == "sdis"){
                 this.ckey = undefined;
+                this.connected = false;
                 if(this.discb){
                     this.discb();
                     this.discb = undefined;
@@ -67,34 +69,38 @@ init(){
     });
 }
 disconnect(cb){
-    //console.log("disc")
     if(this.ckey){
+        console.log("disc",this.ckey);
         var disdata = {"ev_name":"_distalk","ev_data":{"ckey":this.ckey},"ceid":this.ceid};
         this.ws.send("4"+JSON.stringify(disdata));
-        if (cb){
-            this.discb = cb;
-        }
+        this.ckey = undefined;
+        this.connected = false;
+        this.discb = cb;
     }
 }
-sendTypingIndicator(val){
-    if(this.ckey){
-        var msgdata = {"ev_name":"_mtyp","ev_data":{"ckey":this.ckey,"val":val}};
-        this.ws.send("4"+JSON.stringify(msgdata));
+reconnect(){
+    if(this.ckey && this.discb == undefined){
+        this.disconnect(this.searchPerson);
+    }else{
+        this.searchPerson();
     }
 }
 sendMessage(txt){
     if(this.ckey){
-        this.sendTypingIndicator(true);
         var msgdata = {"ev_name":"_pmsg","ev_data":{"ckey":this.ckey,"msg":txt,"idn":this.idn},"ceid":this.ceid};
         this.ws.send("4"+JSON.stringify(msgdata));
         this.ceid = this.ceid + 1;
         this.idn = this.idn + 1;
-        this.sendTypingIndicator(false);
     }
+}
+sendCaptcha(txt){
+    //{"ev_name":"_capsol","ev_data":{"solution":"geng"}}
+    var msgdata = {"ev_name":"_capsol","ev_data":{"solution":txt}};
+    this.ws.send("4"+JSON.stringify(msgdata));
 }
 searchPerson(){
     var data = {"ev_name":"_sas","ev_data":{"channel":"main","myself":{"sex":0,"loc":0},"preferences":{"sex":0,"loc":0}},"ceid":this.ceid};
-    if(this.ckey == undefined && this.connected){
+    if(this.ckey == undefined && !this.connected){
         this.ws.send("4"+JSON.stringify(data));
         this.ceid = this.ceid + 1;
     }
